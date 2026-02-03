@@ -1,4 +1,4 @@
-Cipher
+## Cipher
 
 Cipher is a lightweight, dependency free converter for text, hexadecimal, and binary using UTF-8, ASCII, and EBCDIC (IBM CP037).
 

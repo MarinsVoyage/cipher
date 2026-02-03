@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "files": {
+    "app": "config/app.json",
+    "encodings": "config/encodings.json",
+    "tools": "config/tools.json"
+  }
+}

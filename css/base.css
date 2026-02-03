@@ -1,0 +1,64 @@
+:root
+{
+  color-scheme: dark;
+  --color-background: #0b1629;
+  --color-background-secondary: #0f1f38;
+  --color-panel-background: #12253f;
+  --color-panel-border: rgba(141, 181, 255, 0.18);
+  --color-text-primary: #e6eefc;
+  --color-text-muted: #a7b7d7;
+  --color-accent: #6fb1ff;
+  --color-accent-strong: #86c2ff;
+  --color-danger: #ff7b7b;
+  --color-warning: #ffd08a;
+  --color-success: #7bd8b3;
+  --shadow-panel-elevation: 0 18px 40px rgba(6, 12, 25, 0.35);
+  --radius-large: 18px;
+  --radius-medium: 12px;
+  --radius-small: 8px;
+  --spacing-extra-small: 6px;
+  --spacing-small: 10px;
+  --spacing-medium: 16px;
+  --spacing-large: 24px;
+  --spacing-extra-large: 32px;
+  --font-family-sans: "Avenir Next", "Avenir", "Trebuchet MS", "Verdana", sans-serif;
+  --font-family-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  --font-family-monospace: "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", "Courier New", monospace;
+}
+
+*,
+*::before,
+*::after
+{
+  box-sizing: border-box;
+}
+
+html,
+body
+{
+  height: 100%;
+  margin: 0;
+}
+
+body
+{
+  font-family: var(--font-family-sans);
+  background: radial-gradient(circle at top, rgba(56, 97, 170, 0.4), transparent 55%),
+    linear-gradient(160deg, #070f1f 0%, #0c1b31 40%, #0b1426 100%);
+  color: var(--color-text-primary);
+}
+
+button,
+input,
+select,
+textarea
+{
+  font-family: inherit;
+  font-size: 1rem;
+  color: inherit;
+}
+
+a
+{
+  color: inherit;
+}

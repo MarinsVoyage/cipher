@@ -1,0 +1,211 @@
+[
+  {
+    "id": "convert.text_to_hexadecimal",
+    "title": "Text \u2192 Hexadecimal",
+    "description": "Turn text into bytes with the chosen encoding and show them as hexadecimal.",
+    "input": {
+      "label": "Text"
+    },
+    "output": {
+      "label": "Hexadecimal"
+    },
+    "parameters": [
+      {
+        "id": "encodingId",
+        "type": "select",
+        "default": "utf-8",
+        "label": "Encoding",
+        "options": [
+          "utf-8",
+          "ascii",
+          "ebcdic-cp037"
+        ],
+        "help": "Choose the character encoding used to move between text and bytes."
+      },
+      {
+        "id": "errors",
+        "type": "select",
+        "default": "strict",
+        "label": "Error mode",
+        "options": [
+          "strict",
+          "replace",
+          "ignore"
+        ],
+        "help": "How to handle characters that do not fit. Strict stops and shows an error. Replace uses \"?\" or U+FFFD. Ignore skips them."
+      },
+      {
+        "id": "uppercase",
+        "type": "boolean",
+        "default": false,
+        "label": "Uppercase hexadecimal",
+        "help": "Use uppercase A-F in hexadecimal output, for example \"4F\" instead of \"4f\"."
+      },
+      {
+        "id": "separator",
+        "type": "select",
+        "default": " ",
+        "label": "Byte separator",
+        "options": [
+          " ",
+          "",
+          ":"
+        ],
+        "help": "Add a separator between bytes, for example space gives \"41 42\" and empty gives \"4142\"."
+      }
+    ],
+    "reverseToolIdentifier": "convert.hexadecimal_to_text"
+  },
+  {
+    "id": "convert.hexadecimal_to_text",
+    "title": "Hexadecimal \u2192 Text",
+    "description": "Read hexadecimal bytes and turn them into text with the chosen encoding.",
+    "input": {
+      "label": "Hexadecimal"
+    },
+    "output": {
+      "label": "Text"
+    },
+    "parameters": [
+      {
+        "id": "encodingId",
+        "type": "select",
+        "default": "utf-8",
+        "label": "Encoding",
+        "options": [
+          "utf-8",
+          "ascii",
+          "ebcdic-cp037"
+        ],
+        "help": "Choose the character encoding used to move between text and bytes."
+      },
+      {
+        "id": "errors",
+        "type": "select",
+        "default": "strict",
+        "label": "Error mode",
+        "options": [
+          "strict",
+          "replace",
+          "ignore"
+        ],
+        "help": "How to handle characters that do not fit. Strict stops and shows an error. Replace uses \"?\" or U+FFFD. Ignore skips them."
+      },
+      {
+        "id": "strictHexadecimal",
+        "type": "boolean",
+        "default": true,
+        "label": "Strict hexadecimal validation",
+        "help": "When on, only hexadecimal characters are allowed and the digit count must be even."
+      }
+    ],
+    "reverseToolIdentifier": "convert.text_to_hexadecimal"
+  },
+  {
+    "id": "convert.text_to_binary",
+    "title": "Text \u2192 Binary",
+    "description": "Turn text into bytes with the chosen encoding and show them as binary.",
+    "input": {
+      "label": "Text"
+    },
+    "output": {
+      "label": "Binary"
+    },
+    "parameters": [
+      {
+        "id": "encodingId",
+        "type": "select",
+        "default": "utf-8",
+        "label": "Encoding",
+        "options": [
+          "utf-8",
+          "ascii",
+          "ebcdic-cp037"
+        ],
+        "help": "Choose the character encoding used to move between text and bytes."
+      },
+      {
+        "id": "errors",
+        "type": "select",
+        "default": "strict",
+        "label": "Error mode",
+        "options": [
+          "strict",
+          "replace",
+          "ignore"
+        ],
+        "help": "How to handle characters that do not fit. Strict stops and shows an error. Replace uses \"?\" or U+FFFD. Ignore skips them."
+      },
+      {
+        "id": "groupSizeBits",
+        "type": "select",
+        "default": 8,
+        "label": "Group size (bits)",
+        "options": [
+          8,
+          4
+        ],
+        "help": "Group bits for readability. 8 gives \"01000001\" and 4 gives \"0100 0001\"."
+      },
+      {
+        "id": "separator",
+        "type": "select",
+        "default": " ",
+        "label": "Group separator",
+        "options": [
+          " ",
+          "",
+          "_",
+          "-"
+        ],
+        "help": "Add a separator between bit groups. Space gives \"0100 0001\" and empty gives \"01000001\"."
+      }
+    ],
+    "reverseToolIdentifier": "convert.binary_to_text"
+  },
+  {
+    "id": "convert.binary_to_text",
+    "title": "Binary \u2192 Text",
+    "description": "Read binary bytes and turn them into text with the chosen encoding.",
+    "input": {
+      "label": "Binary"
+    },
+    "output": {
+      "label": "Text"
+    },
+    "parameters": [
+      {
+        "id": "encodingId",
+        "type": "select",
+        "default": "utf-8",
+        "label": "Encoding",
+        "options": [
+          "utf-8",
+          "ascii",
+          "ebcdic-cp037"
+        ],
+        "help": "Choose the character encoding used to move between text and bytes."
+      },
+      {
+        "id": "errors",
+        "type": "select",
+        "default": "strict",
+        "label": "Error mode",
+        "options": [
+          "strict",
+          "replace",
+          "ignore"
+        ],
+        "help": "How to handle characters that do not fit. Strict stops and shows an error. Replace uses \"?\" or U+FFFD. Ignore skips them."
+      },
+      {
+        "id": "strictBinary",
+        "type": "boolean",
+        "default": true,
+        "label": "Strict binary validation",
+        "help": "When on, only 0 or 1 is allowed and the bit count must fit full bytes."
+      }
+    ],
+    "reverseToolIdentifier": "convert.text_to_binary"
+  }
+]

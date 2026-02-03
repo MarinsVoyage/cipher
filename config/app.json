@@ -1,0 +1,21 @@
+{
+  "appName": "Cipher",
+  "version": "2026.2.3",
+  "maxInputChars": 5000,
+  "defaultToolId": "convert.text_to_hexadecimal",
+  "ui": {
+    "preferMonospaceOutput": true,
+    "showLiveCount": true,
+    "rememberLastTool": true,
+    "responsive": {
+      "mobileBreakpointPx": 860
+    }
+  },
+  "storage": {
+    "localStorageKeys": {
+      "selectedToolId": "cipher.selectedToolId",
+      "lastInput": "cipher.lastInput",
+      "lastParams": "cipher.lastParams"
+    }
+  }
+}

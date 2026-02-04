@@ -39,6 +39,73 @@
     return String(_optionValue);
   }
 
+  function _getTooltipViewportPadding()
+  {
+    var _rootStyles = window.getComputedStyle(document.documentElement);
+    var _paddingValue = _rootStyles.getPropertyValue("--tooltip-viewport-padding");
+    var _parsedPadding = parseFloat(_paddingValue);
+    if (Number.isNaN(_parsedPadding))
+    {
+      return 0;
+    }
+    return _parsedPadding;
+  }
+
+  function _positionInfoTooltip(_buttonElement)
+  {
+    if (!_buttonElement)
+    {
+      return;
+    }
+
+    var _tooltipElement = _buttonElement.querySelector(".info-tooltip");
+    if (!_tooltipElement)
+    {
+      return;
+    }
+
+    _tooltipElement.style.setProperty("--tooltip-shift", "0px");
+
+    var _viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    if (_viewportWidth <= 0)
+    {
+      return;
+    }
+
+    var _viewportPadding = _getTooltipViewportPadding();
+    var _tooltipRect = _tooltipElement.getBoundingClientRect();
+    var _leftOverflow = _viewportPadding - _tooltipRect.left;
+    var _rightOverflow = _tooltipRect.right - (_viewportWidth - _viewportPadding);
+
+    if (_leftOverflow > 0)
+    {
+      _tooltipElement.style.setProperty("--tooltip-shift", _leftOverflow + "px");
+      return;
+    }
+
+    if (_rightOverflow > 0)
+    {
+      _tooltipElement.style.setProperty("--tooltip-shift", "-" + _rightOverflow + "px");
+      return;
+    }
+
+    _tooltipElement.style.removeProperty("--tooltip-shift");
+  }
+
+  function _positionInfoTooltipsInRoot(_rootElement)
+  {
+    if (!_rootElement)
+    {
+      return;
+    }
+
+    var _tooltipButtons = _rootElement.querySelectorAll(".info-icon");
+    _tooltipButtons.forEach(function (_buttonElement)
+    {
+      _positionInfoTooltip(_buttonElement);
+    });
+  }
+
   function _buildInfoIcon(_tooltipText)
   {
     if (!_tooltipText)
@@ -51,8 +118,12 @@
     _buttonElement.className = "info-icon";
     _buttonElement.setAttribute("aria-label", _tooltipText);
     _buttonElement.setAttribute("aria-expanded", "false");
-    _buttonElement.setAttribute("data-tooltip", _tooltipText);
     _buttonElement.textContent = "?";
+
+    var _tooltipElement = document.createElement("span");
+    _tooltipElement.className = "info-tooltip";
+    _tooltipElement.textContent = _tooltipText;
+    _buttonElement.appendChild(_tooltipElement);
 
     _buttonElement.addEventListener("click", function (_event)
     {
@@ -77,6 +148,18 @@
         _buttonElement.classList.add("is-open");
         _buttonElement.setAttribute("aria-expanded", "true");
       }
+
+      _positionInfoTooltip(_buttonElement);
+    });
+
+    _buttonElement.addEventListener("mouseenter", function ()
+    {
+      _positionInfoTooltip(_buttonElement);
+    });
+
+    _buttonElement.addEventListener("focus", function ()
+    {
+      _positionInfoTooltip(_buttonElement);
     });
 
     _buttonElement.addEventListener("blur", function ()
@@ -386,6 +469,8 @@
 
       _userInterfaceElements.paramGrid.appendChild(_controlWrapperElement);
     });
+
+    _positionInfoTooltipsInRoot(_userInterfaceElements.paramGrid);
   }
 
   function _updateToolDetails(_userInterfaceElements, _toolDefinition, _configuration, _state, _eventHandlers)
@@ -548,6 +633,7 @@
       setMobileLayout: function (_isMobile)
       {
         _setMobileLayout(_rootElement, _isMobile);
+        _positionInfoTooltipsInRoot(_rootElement);
       },
       setInputValue: function (_value)
       {

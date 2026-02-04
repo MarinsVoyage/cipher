@@ -21,6 +21,9 @@
   --spacing-medium: 16px;
   --spacing-large: 24px;
   --spacing-extra-large: 32px;
+  --tooltip-offset: var(--spacing-small);
+  --tooltip-max-width: 320px;
+  --tooltip-viewport-padding: var(--spacing-small);
   --font-family-sans: "Avenir Next", "Avenir", "Trebuchet MS", "Verdana", sans-serif;
   --font-family-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
   --font-family-monospace: "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", "Courier New", monospace;

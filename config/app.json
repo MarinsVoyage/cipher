@@ -1,6 +1,6 @@
 {
   "appName": "Cipher",
-  "version": "2026.2.3",
+  "version": "2026.2.4",
   "maxInputChars": 5000,
   "defaultToolId": "convert.text_to_hexadecimal",
   "ui": {

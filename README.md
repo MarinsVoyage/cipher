@@ -2,6 +2,12 @@
 
 Cipher is a lightweight, dependency free converter for text, hexadecimal, and binary using UTF-8, ASCII, and EBCDIC (IBM CP037).
 
+Security Notice
+
+- This is a hobby project for entertainment and education.
+- Do not use it for secrets, credentials, private keys, personal data, or other sensitive data.
+- See `SECURITY.md` for details. This project is intended only for education, not for sensitive information.
+
 Highlights
 
 - Text to hexadecimal, hexadecimal to text, text to binary, and binary to text.

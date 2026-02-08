@@ -15,12 +15,20 @@
     return _character === " " || _character === "_" || _character === "-" || _character === "\n" || _character === "\r" || _character === "\t";
   }
 
+  function _formatCountText(_count, _singularLabel, _pluralLabel)
+  {
+    return _count + " " + (_count === 1 ? _singularLabel : _pluralLabel);
+  }
+
   function _parseHexadecimalToBytes(_hexadecimalText, _strictHexadecimal)
   {
     var _normalizedHexadecimalDigits = "";
     var _characterIndex = 0;
     var _currentCharacter = "";
     var _isStrictHexadecimal = _strictHexadecimal === true;
+    var _ignoredCharacterCount = 0;
+    var _didPadOddDigitCount = false;
+    var _messageList = [];
 
     for (_characterIndex = 0; _characterIndex < _hexadecimalText.length; _characterIndex += 1)
     {
@@ -37,16 +45,27 @@
       {
         return {
           error: "Hexadecimal input contains incorrect characters.",
-          bytes: []
+          bytes: [],
+          messages: []
         };
       }
+      else
+      {
+        _ignoredCharacterCount += 1;
+      }
+    }
+
+    if (_ignoredCharacterCount > 0)
+    {
+      _messageList.push("Hexadecimal input ignored " + _formatCountText(_ignoredCharacterCount, "non-hexadecimal character", "non-hexadecimal characters") + " in non-strict mode.");
     }
 
     if (_normalizedHexadecimalDigits.length === 0)
     {
       return {
         bytes: [],
-        error: null
+        error: null,
+        messages: _messageList
       };
     }
 
@@ -56,10 +75,17 @@
       {
         return {
           error: "Hexadecimal input has an odd number of digits.",
-          bytes: []
+          bytes: [],
+          messages: _messageList
         };
       }
       _normalizedHexadecimalDigits = "0" + _normalizedHexadecimalDigits;
+      _didPadOddDigitCount = true;
+    }
+
+    if (_didPadOddDigitCount)
+    {
+      _messageList.push("Hexadecimal input had an odd digit count, so a leading 0 was added in non-strict mode.");
     }
 
     var _byteValues = [];
@@ -70,7 +96,8 @@
       {
         return {
           error: "Hexadecimal input could not be parsed.",
-          bytes: []
+          bytes: [],
+          messages: _messageList
         };
       }
       _byteValues.push(_byteValue);
@@ -78,7 +105,8 @@
 
     return {
       bytes: _byteValues,
-      error: null
+      error: null,
+      messages: _messageList
     };
   }
 
@@ -88,6 +116,9 @@
     var _characterIndex = 0;
     var _currentCharacter = "";
     var _isStrictBinary = _strictBinary === true;
+    var _ignoredCharacterCount = 0;
+    var _discardedBitCount = 0;
+    var _messageList = [];
 
     for (_characterIndex = 0; _characterIndex < _binaryText.length; _characterIndex += 1)
     {
@@ -104,16 +135,27 @@
       {
         return {
           error: "Binary input contains incorrect characters.",
-          bytes: []
+          bytes: [],
+          messages: []
         };
       }
+      else
+      {
+        _ignoredCharacterCount += 1;
+      }
+    }
+
+    if (_ignoredCharacterCount > 0)
+    {
+      _messageList.push("Binary input ignored " + _formatCountText(_ignoredCharacterCount, "non-binary character", "non-binary characters") + " in non-strict mode.");
     }
 
     if (_normalizedBinaryDigits.length === 0)
     {
       return {
         bytes: [],
-        error: null
+        error: null,
+        messages: _messageList
       };
     }
 
@@ -123,10 +165,17 @@
       {
         return {
           error: "Binary input does not align to full bytes.",
-          bytes: []
+          bytes: [],
+          messages: _messageList
         };
       }
-      _normalizedBinaryDigits = _normalizedBinaryDigits.slice(0, _normalizedBinaryDigits.length - (_normalizedBinaryDigits.length % 8));
+      _discardedBitCount = _normalizedBinaryDigits.length % 8;
+      _normalizedBinaryDigits = _normalizedBinaryDigits.slice(0, _normalizedBinaryDigits.length - _discardedBitCount);
+    }
+
+    if (_discardedBitCount > 0)
+    {
+      _messageList.push("Binary input ignored " + _formatCountText(_discardedBitCount, "trailing bit", "trailing bits") + " that do not form a full byte in non-strict mode.");
     }
 
     var _byteValues = [];
@@ -138,7 +187,8 @@
       {
         return {
           error: "Binary input could not be parsed.",
-          bytes: []
+          bytes: [],
+          messages: _messageList
         };
       }
       _byteValues.push(_byteValue);
@@ -146,7 +196,8 @@
 
     return {
       bytes: _byteValues,
-      error: null
+      error: null,
+      messages: _messageList
     };
   }
 

@@ -9,14 +9,32 @@
     return "parameter-" + _sanitizedToolIdentifier + "-" + _sanitizedParameterIdentifier;
   }
 
+  function _resolveParameterValue(_parameterDefinition, _parameterValues)
+  {
+    var _resolvedValue = _parameterValues[_parameterDefinition.id];
+    if (_resolvedValue === undefined)
+    {
+      _resolvedValue = _parameterDefinition.default;
+    }
+    var _normalizedValue = window.CipherAppState.normalizeParameterValue(_parameterDefinition, _resolvedValue);
+    if (_normalizedValue === undefined || _normalizedValue === null)
+    {
+      return "";
+    }
+    return _normalizedValue;
+  }
+
   function _renderParameters(_userInterfaceElements, _toolDefinition, _parameterValues, _configuration, _eventHandlers)
   {
     window.CipherCoreDom.clearChildren(_userInterfaceElements.paramGrid);
+    var _parameterRenderMessages = [];
 
     if (!_toolDefinition || !_toolDefinition.parameters || _toolDefinition.parameters.length === 0)
     {
       _userInterfaceElements.paramGrid.appendChild(window.CipherCoreDom.createElement("div", "empty-state", "No parameters for this tool."));
-      return;
+      return {
+        errors: _parameterRenderMessages
+      };
     }
 
     var _resolvedParameterValues = _parameterValues || {};
@@ -28,6 +46,7 @@
       _labelElement.textContent = _parameterDefinition.label;
       var _helpIconElement = window.CipherAppRenderTooltips.buildInfoIcon(_parameterDefinition.help);
       var _inputIdentifier = _buildParameterInputIdentifier(_toolDefinition.id, _parameterDefinition.id);
+      var _resolvedParameterValue = _resolveParameterValue(_parameterDefinition, _resolvedParameterValues);
 
       if (_parameterDefinition.type === "boolean")
       {
@@ -35,7 +54,7 @@
         var _checkboxElement = document.createElement("input");
         _checkboxElement.type = "checkbox";
         _checkboxElement.id = _inputIdentifier;
-        _checkboxElement.checked = _resolvedParameterValues[_parameterDefinition.id] === true;
+        _checkboxElement.checked = _resolvedParameterValue === true;
         _labelElement.htmlFor = _inputIdentifier;
         _checkboxWrapperElement.appendChild(_checkboxElement);
         _checkboxWrapperElement.appendChild(_labelElement);
@@ -54,6 +73,12 @@
       {
         var _labelRowElement = window.CipherCoreDom.createElement("div", "parameter-label-row");
         var _selectElement = document.createElement("select");
+        var _optionList = Array.isArray(_parameterDefinition.options) ? _parameterDefinition.options : [];
+        if (_optionList.length === 0)
+        {
+          _parameterRenderMessages.push("Parameter \"" + _parameterDefinition.id + "\" for tool \"" + _toolDefinition.id + "\" is missing select options.");
+          return;
+        }
         _labelElement.htmlFor = _inputIdentifier;
         _selectElement.id = _inputIdentifier;
         _labelRowElement.appendChild(_labelElement);
@@ -63,15 +88,15 @@
         }
 
         var _optionIndex = 0;
-        for (_optionIndex = 0; _optionIndex < _parameterDefinition.options.length; _optionIndex += 1)
+        for (_optionIndex = 0; _optionIndex < _optionList.length; _optionIndex += 1)
         {
-          var _optionValue = _parameterDefinition.options[_optionIndex];
+          var _optionValue = _optionList[_optionIndex];
           var _optionElement = document.createElement("option");
           _optionElement.value = String(_optionValue);
           _optionElement.textContent = window.CipherAppRenderTooltips.formatOptionLabel(_parameterDefinition, _optionValue, _configuration);
           _selectElement.appendChild(_optionElement);
         }
-        _selectElement.value = String(_resolvedParameterValues[_parameterDefinition.id]);
+        _selectElement.value = String(_resolvedParameterValue);
 
         _selectElement.addEventListener("change", function (_event)
         {
@@ -96,7 +121,7 @@
         {
           _numberInputElement.max = _parameterDefinition.max;
         }
-        _numberInputElement.value = _resolvedParameterValues[_parameterDefinition.id];
+        _numberInputElement.value = _resolvedParameterValue;
 
         _numberInputElement.addEventListener("input", function (_event)
         {
@@ -119,7 +144,7 @@
         _textInputElement.type = "text";
         _textInputElement.id = _inputIdentifier;
         _labelElement.htmlFor = _inputIdentifier;
-        _textInputElement.value = _resolvedParameterValues[_parameterDefinition.id];
+        _textInputElement.value = _resolvedParameterValue;
 
         _textInputElement.addEventListener("input", function (_event)
         {
@@ -140,6 +165,9 @@
     });
 
     window.CipherAppRenderTooltips.positionInfoTooltipsInRoot(_userInterfaceElements.paramGrid);
+    return {
+      errors: _parameterRenderMessages
+    };
   }
 
   window.CipherAppRenderParameters = {

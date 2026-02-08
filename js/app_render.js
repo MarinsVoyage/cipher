@@ -4,16 +4,9 @@
 
   function _getActiveToolDefinition(_configuration, _state)
   {
-    var _toolList = _configuration && _configuration.tools ? _configuration.tools : [];
+    var _toolList = _configuration && Array.isArray(_configuration.tools) ? _configuration.tools : [];
     var _selectedToolIdentifier = _state ? _state.selectedToolIdentifier : "";
-    var _toolDefinition = window.CipherAppState.getToolByIdentifier(_toolList, _selectedToolIdentifier);
-
-    if (!_toolDefinition && _toolList.length > 0)
-    {
-      _toolDefinition = _toolList[0];
-    }
-
-    return _toolDefinition;
+    return window.CipherAppState.resolveActiveToolDefinition(_toolList, _selectedToolIdentifier);
   }
 
   function _init(_rootElement, _configuration, _state, _eventHandlers)
@@ -29,7 +22,6 @@
     _workspaceElement.appendChild(window.CipherAppRenderBuilders.buildOutputPanel(_userInterfaceElements, _eventHandlers, _configuration));
 
     _rootElement.appendChild(_workspaceElement);
-    _rootElement.appendChild(window.CipherAppRenderBuilders.buildFooter(_configuration));
 
     _rootElement.addEventListener("click", function (_event)
     {
@@ -86,6 +78,20 @@
       setInputValue: function (_value)
       {
         _userInterfaceElements.inputArea.value = _value;
+      },
+      selectOutput: function ()
+      {
+        if (!_userInterfaceElements.outputArea)
+        {
+          return;
+        }
+
+        _userInterfaceElements.outputArea.focus();
+        _userInterfaceElements.outputArea.select();
+        if (typeof _userInterfaceElements.outputArea.setSelectionRange === "function")
+        {
+          _userInterfaceElements.outputArea.setSelectionRange(0, _userInterfaceElements.outputArea.value.length);
+        }
       }
     };
   }

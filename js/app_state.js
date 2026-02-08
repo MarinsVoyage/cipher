@@ -21,9 +21,10 @@
       }
     }
 
-    if (!window.CipherAppStateParameters.getToolByIdentifier(_toolList, _selectedToolIdentifier) && _toolList.length > 0)
+    var _activeToolDefinition = window.CipherAppStateParameters.resolveActiveToolDefinition(_toolList, _selectedToolIdentifier);
+    if (_activeToolDefinition)
     {
-      _selectedToolIdentifier = _toolList[0].id;
+      _selectedToolIdentifier = _activeToolDefinition.id;
     }
 
     var _inputText = "";
@@ -39,6 +40,7 @@
       outputText: "",
       parametersByToolIdentifier: window.CipherAppStateParameters.buildParametersByToolIdentifier(_toolList, _storedParameters),
       validationMessages: [],
+      parameterMessages: [],
       conversionMessages: [],
       ui: {
         isMobile: false,
@@ -50,6 +52,7 @@
   window.CipherAppState = {
     create: _createState,
     getToolByIdentifier: window.CipherAppStateParameters.getToolByIdentifier,
+    resolveActiveToolDefinition: window.CipherAppStateParameters.resolveActiveToolDefinition,
     normalizeParameterValue: window.CipherAppStateParameters.normalizeParameterValue,
     saveSelectedTool: window.CipherAppStateStorage.saveSelectedTool,
     saveInputText: window.CipherAppStateStorage.saveInputText,

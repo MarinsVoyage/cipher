@@ -20,6 +20,16 @@
     return null;
   }
 
+  function _resolveActiveToolDefinition(_toolList, _selectedToolIdentifier)
+  {
+    var _toolDefinition = _getToolByIdentifier(_toolList, _selectedToolIdentifier);
+    if (!_toolDefinition && Array.isArray(_toolList) && _toolList.length > 0)
+    {
+      _toolDefinition = _toolList[0];
+    }
+    return _toolDefinition;
+  }
+
   function _normalizeParameterValue(_parameterDefinition, _rawValue)
   {
     if (!_parameterDefinition)
@@ -34,7 +44,7 @@
 
     if (_parameterDefinition.type === "select")
     {
-      var _optionList = _parameterDefinition.options || [];
+      var _optionList = Array.isArray(_parameterDefinition.options) ? _parameterDefinition.options : [];
       var _optionIndex = 0;
       for (_optionIndex = 0; _optionIndex < _optionList.length; _optionIndex += 1)
       {
@@ -102,6 +112,7 @@
 
   window.CipherAppStateParameters = {
     getToolByIdentifier: _getToolByIdentifier,
+    resolveActiveToolDefinition: _resolveActiveToolDefinition,
     normalizeParameterValue: _normalizeParameterValue,
     buildParametersByToolIdentifier: _buildParametersByToolIdentifier
   };

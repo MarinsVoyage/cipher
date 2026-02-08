@@ -2,8 +2,18 @@
 {
   "use strict";
 
+  function _isValidLocalStorageKey(_storageKey)
+  {
+    return typeof _storageKey === "string" && _storageKey.length > 0;
+  }
+
   function _safeReadLocalStorage(_storageKey)
   {
+    if (!_isValidLocalStorageKey(_storageKey))
+    {
+      return null;
+    }
+
     try
     {
       return window.localStorage.getItem(_storageKey);
@@ -16,6 +26,11 @@
 
   function _safeWriteLocalStorage(_storageKey, _storageValue)
   {
+    if (!_isValidLocalStorageKey(_storageKey))
+    {
+      return;
+    }
+
     try
     {
       window.localStorage.setItem(_storageKey, _storageValue);
@@ -30,7 +45,12 @@
   {
     var _appConfiguration = _configuration && _configuration.app ? _configuration.app : {};
     var _storageConfiguration = _appConfiguration.storage || {};
-    return _storageConfiguration.localStorageKeys || {};
+    var _localStorageKeys = _storageConfiguration.localStorageKeys;
+    if (!_localStorageKeys || typeof _localStorageKeys !== "object")
+    {
+      return {};
+    }
+    return _localStorageKeys;
   }
 
   function _loadStoredParameters(_storageKey)

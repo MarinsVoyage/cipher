@@ -12,12 +12,7 @@
   {
     var _toolList = _getToolList(_runtime);
     var _state = _runtime && _runtime.state ? _runtime.state : {};
-    var _toolDefinition = window.CipherAppState.getToolByIdentifier(_toolList, _state.selectedToolIdentifier);
-    if (!_toolDefinition && _toolList.length > 0)
-    {
-      _toolDefinition = _toolList[0];
-    }
-    return _toolDefinition;
+    return window.CipherAppState.resolveActiveToolDefinition(_toolList, _state.selectedToolIdentifier);
   }
 
   function _getAppConfiguration(_runtime)
@@ -37,11 +32,12 @@
 
     if (_copyStatus !== "idle")
     {
+      var _resetDelayMilliseconds = _copyStatus === "manual" ? 3500 : 1500;
       _runtime.copyResetTimer = window.setTimeout(function ()
       {
         _runtime.state.ui.copyStatus = "idle";
         _runtime.renderInterface.setCopyStatus("idle");
-      }, 1500);
+      }, _resetDelayMilliseconds);
     }
   }
 
@@ -62,7 +58,7 @@
     var _conversionResult = window.CipherAppToolsConvert.runTool(_toolDefinition.id, _runtime.state.inputText, _parameterValues, _runtime.configuration);
 
     _runtime.state.outputText = _conversionResult.outputText;
-    _runtime.state.conversionMessages = _conversionResult.errors || [];
+    _runtime.state.conversionMessages = Array.isArray(_conversionResult.errors) ? _conversionResult.errors : [];
 
     _runtime.renderInterface.updateOutput(_runtime.state);
     _runtime.renderInterface.updateErrors(_runtime.state);
@@ -111,12 +107,14 @@
           })
           .catch(function ()
           {
-            _setCopyStatus(_runtime, "error");
+            _runtime.renderInterface.selectOutput();
+            _setCopyStatus(_runtime, "manual");
           });
         return;
       }
 
-      _setCopyStatus(_runtime, "error");
+      _runtime.renderInterface.selectOutput();
+      _setCopyStatus(_runtime, "manual");
     }
 
     function _handleInputChange(_inputText)
@@ -186,6 +184,13 @@
         return;
       }
 
+      var _nextInputText = _runtime.state.outputText || "";
+      var _conversionMessageList = Array.isArray(_runtime.state.conversionMessages) ? _runtime.state.conversionMessages : [];
+      if (_conversionMessageList.length > 0 && _nextInputText.length === 0)
+      {
+        return;
+      }
+
       var _candidateToolIdentifier = _currentToolDefinition.reverseToolIdentifier ? _currentToolDefinition.reverseToolIdentifier : _runtime.state.selectedToolIdentifier;
       var _nextToolDefinition = window.CipherAppState.getToolByIdentifier(_getToolList(_runtime), _candidateToolIdentifier);
 
@@ -218,13 +223,6 @@
           window.CipherAppState.saveSelectedTool(_runtime.configuration, _nextToolDefinition.id);
         }
         _runtime.renderInterface.renderToolDetails(_runtime.state);
-      }
-
-      var _nextInputText = _runtime.state.outputText || "";
-      var _conversionMessageList = _runtime.state.conversionMessages || [];
-      if (_conversionMessageList.length > 0 && _nextInputText.length === 0)
-      {
-        return;
       }
 
       _handleInputChange(_nextInputText);

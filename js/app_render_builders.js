@@ -161,22 +161,10 @@
     return _panelElement;
   }
 
-  function _buildFooter(_configuration)
-  {
-    var _footerElement = window.CipherCoreDom.createElement("div", "app-footer");
-    var _appConfiguration = _configuration && _configuration.app ? _configuration.app : {};
-    var _appName = _appConfiguration.appName || "Cipher";
-    var _appVersion = _appConfiguration.version || "";
-    var _footerText = _appVersion ? _appName + " " + _appVersion : _appName;
-    _footerElement.textContent = _footerText;
-    return _footerElement;
-  }
-
   window.CipherAppRenderBuilders = {
     buildToolSelectorPanel: _buildToolSelectorPanel,
     buildInputPanel: _buildInputPanel,
     buildParameterPanel: _buildParameterPanel,
-    buildOutputPanel: _buildOutputPanel,
-    buildFooter: _buildFooter
+    buildOutputPanel: _buildOutputPanel
   };
 }());

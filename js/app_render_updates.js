@@ -9,6 +9,8 @@
       return;
     }
 
+    var _resolvedState = _state || {};
+
     var _inputDefinition = _toolDefinition.input || {};
     var _outputDefinition = _toolDefinition.output || {};
 
@@ -21,9 +23,10 @@
       _userInterfaceElements.inputArea.placeholder = "Enter " + _userInterfaceElements.inputTitle.textContent.toLowerCase() + "...";
     }
 
-    var _parameterValuesByToolIdentifier = _state && _state.parametersByToolIdentifier ? _state.parametersByToolIdentifier : {};
+    var _parameterValuesByToolIdentifier = _resolvedState.parametersByToolIdentifier ? _resolvedState.parametersByToolIdentifier : {};
     var _parameterValues = _parameterValuesByToolIdentifier[_toolDefinition.id] || {};
-    window.CipherAppRenderParameters.renderParameters(_userInterfaceElements, _toolDefinition, _parameterValues, _configuration, _eventHandlers);
+    var _parameterRenderResult = window.CipherAppRenderParameters.renderParameters(_userInterfaceElements, _toolDefinition, _parameterValues, _configuration, _eventHandlers);
+    _resolvedState.parameterMessages = _parameterRenderResult && Array.isArray(_parameterRenderResult.errors) ? _parameterRenderResult.errors : [];
   }
 
   function _updateOutput(_userInterfaceElements, _state)
@@ -35,12 +38,18 @@
   {
     var _combinedMessages = [];
     var _messageIndex = 0;
-    var _validationMessages = _state.validationMessages || [];
-    var _conversionMessages = _state.conversionMessages || [];
+    var _validationMessages = Array.isArray(_state.validationMessages) ? _state.validationMessages : [];
+    var _parameterMessages = Array.isArray(_state.parameterMessages) ? _state.parameterMessages : [];
+    var _conversionMessages = Array.isArray(_state.conversionMessages) ? _state.conversionMessages : [];
 
     for (_messageIndex = 0; _messageIndex < _validationMessages.length; _messageIndex += 1)
     {
       _combinedMessages.push(_validationMessages[_messageIndex]);
+    }
+
+    for (_messageIndex = 0; _messageIndex < _parameterMessages.length; _messageIndex += 1)
+    {
+      _combinedMessages.push(_parameterMessages[_messageIndex]);
     }
 
     for (_messageIndex = 0; _messageIndex < _conversionMessages.length; _messageIndex += 1)
@@ -83,6 +92,7 @@
   {
     _userInterfaceElements.copyButton.classList.remove("is-success");
     _userInterfaceElements.copyButton.classList.remove("is-warning");
+    _userInterfaceElements.copyButton.classList.remove("is-info");
 
     if (_status === "success")
     {
@@ -95,6 +105,13 @@
     {
       _userInterfaceElements.copyButton.textContent = "Copy failed";
       _userInterfaceElements.copyButton.classList.add("is-warning");
+      return;
+    }
+
+    if (_status === "manual")
+    {
+      _userInterfaceElements.copyButton.textContent = "Press Cmd/Ctrl+C";
+      _userInterfaceElements.copyButton.classList.add("is-info");
       return;
     }
 

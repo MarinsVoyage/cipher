@@ -209,6 +209,12 @@
   color: var(--color-warning);
 }
 
+.button.is-info
+{
+  border-color: rgba(111, 177, 255, 0.75);
+  color: var(--color-accent-strong);
+}
+
 .error-list
 {
   display: flex;
@@ -278,13 +284,4 @@
 .info-icon.is-open .info-tooltip
 {
   opacity: 1;
-}
-
-.app-footer
-{
-  text-align: center;
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
